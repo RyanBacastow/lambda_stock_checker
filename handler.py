@@ -11,7 +11,7 @@ def lambda_handler(event, context):
     final_string = """"""
     for ticker in index_tickers:
         try:
-            url = "https://financialmodelingprep.com/api/v3/major-indexes/{}".format(ticker)
+            url = "https://financialmodelingprep.com//api/v3/majors-indexes/{}".format(ticker)
             print('Attempting get from {}'.format(url))
             with closing(urlopen(url)) as responseData:
                 json_data = responseData.read()
