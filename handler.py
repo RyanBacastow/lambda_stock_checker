@@ -39,7 +39,7 @@ def lambda_handler(event, context):
                                           )
 
 
-        final_string+="\n All of major indexes moved a cumulative sum of {} points.".format(str(market_indicator_total))
+        final_string+="\n All indexes moved a cumulative sum of {} points. \n".format(str(market_indicator_total))
 
     except Exception as e:
         print(e)
@@ -57,9 +57,6 @@ def publish_message_sns(message):
             TargetArn=sns_arn,
             Message=message
         )
-
-        if response is None:
-            raise Exception('Error posting SNS message!')
 
     except Exception as e:
         print("ERROR PUBLISHING MESSAGE TO SNS: {}".format(e))
