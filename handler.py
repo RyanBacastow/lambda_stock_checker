@@ -3,7 +3,6 @@ from contextlib import closing
 import json
 import boto3
 from datetime import datetime
-from pytz import timezone
 from os import environ as env
 
 
@@ -25,13 +24,12 @@ def lambda_handler(event, context):
                 else:
                     price_change_type = 'neutral'
 
-                tz = timezone('EST')
 
-                final_string += "The {full_ticker_name} (ticker:{ticker}) index has had {price_change_type} price change since yesterday's price as of {tz_datetime} EST.\n"\
+                final_string += "The {full_ticker_name} (ticker:{ticker}) index has had {price_change_type} price change since yesterday's price as of {tz_datetime} UTC.\n"\
                                   .format(full_ticker_name=full_ticker_name,
                                           ticker=ticker,
                                           price_change_type=price_change_type,
-                                          tz_datetime=datetime.now(tz)
+                                          tz_datetime=datetime.utcnow()
                                           )
 
         except Exception as e:
