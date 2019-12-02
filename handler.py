@@ -27,10 +27,11 @@ def lambda_handler(event, context):
                     price_change_type = 'neutral'
 
 
-                final_string += "The {full_ticker_name} (ticker:{ticker}) index has had {price_change_type} price change since yesterday's price as of {tz_datetime} UTC.\n"\
+                final_string += "The {full_ticker_name} (ticker:{ticker}) index has had a {price_change_type} price change of {price_change} since yesterday's price as of {tz_datetime} UTC.\n"\
                                   .format(full_ticker_name=full_ticker_name,
                                           ticker=ticker,
                                           price_change_type=price_change_type,
+                                          price_change=price_change,
                                           tz_datetime=datetime.utcnow()
                                           )
 
