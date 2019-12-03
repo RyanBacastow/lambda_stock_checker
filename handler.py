@@ -70,7 +70,7 @@ def stock_checker():
                 deserialised_data = json.loads(json_data)
                 print(deserialised_data)
 
-            data = deserialised_data[stock_ticker]
+            data = deserialised_data[stock_ticker][0]
             ticker_date = data['date']
 
             if datetime.utcnow().date() > (datetime.strptime(ticker_date, '%Y-%m-%d') + timedelta(days=1)):
