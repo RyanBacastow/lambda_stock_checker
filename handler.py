@@ -19,7 +19,7 @@ def lambda_handler(event, context):
 
 
 def index_checker():
-    final_string = """INDEXES\n\n"""
+    final_string = """\nINDEXES\n"""
     try:
         url = "https://financialmodelingprep.com//api/v3/majors-indexes/"
         print('Attempting get data from {}'.format(url))
@@ -27,7 +27,7 @@ def index_checker():
             json_data = responseData.read()
             deserialised_data = json.loads(json_data)
             print(deserialised_data)
-        final_string = """Checking indexes at {utc_datetime} UTC: \n""".format(utc_datetime=datetime.utcnow())
+        final_string = """Checking indexes at {utc_datetime} UTC:\n""".format(utc_datetime=datetime.utcnow())
         market_indicator_total=0.0
         for ticker in deserialised_data['majorIndexesList']:
                 ticker_name = ticker['ticker']
@@ -50,7 +50,7 @@ def index_checker():
                                           )
 
 
-        final_string+="\n All indexes moved a cumulative sum of {} points. \n".format(str(market_indicator_total))
+        final_string+="\nAll indexes moved a cumulative sum of {} points. \n-------------------------------------------------\n".format(str(market_indicator_total))
 
     except Exception as e:
         print(e)
@@ -60,7 +60,7 @@ def index_checker():
 
 
 def stock_checker():
-    final_string = """ETFS/STOCKS\n\n"""
+    final_string = """\nETFS/STOCKS\n"""
     try:
         for stock_ticker in stock_tickers:
             url = "https://financialmodelingprep.com/api/v3/historical-price-full/{}?timeseries=1".format(stock_ticker)
