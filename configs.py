@@ -1,0 +1,1 @@
+stock_tickers = ['VTI','VSS','SCHB','SCHF','VOO','QQQ','VUG','VV','VTV','VO','VEA','VB','BND']
