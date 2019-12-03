@@ -1,6 +1,5 @@
 import decimal
 import json
-from helper import DecimalEncoder
 from datetime import datetime
 from boto3.dynamodb.conditions import Key, Attr
 

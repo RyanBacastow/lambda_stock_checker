@@ -81,12 +81,13 @@ def stock_checker():
                 return final_string
 
             price_change = truncate(float(data['change']),4)
+            change_float = float(price_change)
             price_change_percent = truncate(float(data['changePercent']), 4)
             close = data['close']
 
-            if price_change > 0:
+            if change_float > 0:
                 price_change_type = 'upward'
-            elif price_change < 0:
+            elif change_float < 0:
                 price_change_type = 'downward'
             else:
                 price_change_type = 'neutral'
