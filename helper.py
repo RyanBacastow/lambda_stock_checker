@@ -4,6 +4,14 @@ from helper import DecimalEncoder
 from datetime import datetime
 from boto3.dynamodb.conditions import Key, Attr
 
+def truncate(f, n):
+    '''Truncates/pads a float f to n decimal places without rounding'''
+    s = '{}'.format(f)
+    if 'e' in s or 'E' in s:
+        return '{0:.{1}f}'.format(f, n)
+    i, p, d = s.partition('.')
+    return '.'.join([i, (d+'0'*n)[:n]])
+
 #DYNAMO HELPER FUNCTIONS
 # Helper class to convert a DynamoDB item to JSON.'
 

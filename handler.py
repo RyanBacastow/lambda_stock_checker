@@ -6,6 +6,7 @@ from datetime import timedelta, datetime
 from os import environ as env
 import logging
 from configs import stock_tickers
+from helper import truncate
 
 boto3.set_stream_logger('boto3.resources', logging.DEBUG)
 logging.basicConfig(level=logging.DEBUG)
@@ -19,7 +20,11 @@ def lambda_handler(event, context):
 
 
 def index_checker():
-    final_string = """\nINDEXES\n"""
+    final_string = """Checked indexes and stocks at {utc_datetime} UTC.\n""".format(utc_datetime=datetime.utcnow())
+    sep = '-----------------------------------------------------------------'
+    final_string += sep + '\n'
+    final_string += """INDEXES\n"""
+
     try:
         url = "https://financialmodelingprep.com//api/v3/majors-indexes/"
         print('Attempting get data from {}'.format(url))
@@ -27,7 +32,6 @@ def index_checker():
             json_data = responseData.read()
             deserialised_data = json.loads(json_data)
             print(deserialised_data)
-        final_string = """Checked indexes and stocks at {utc_datetime} UTC.\n\n""".format(utc_datetime=datetime.utcnow())
         market_indicator_total=0.0
         for ticker in deserialised_data['majorIndexesList']:
                 ticker_name = ticker['ticker']
@@ -50,7 +54,7 @@ def index_checker():
                                           )
 
 
-        final_string+="\nAll indexes moved a cumulative sum of {} points. \n-------------------------------------------------\n".format(str(market_indicator_total))
+        final_string+="\nAll indexes moved a cumulative sum of {} points.\n".format(str(market_indicator_total)) + sep + '\n'
 
     except Exception as e:
         print(e)
@@ -59,7 +63,7 @@ def index_checker():
 
 
 def stock_checker():
-    final_string = """\nETFS/STOCKS\n"""
+    final_string = """ETFS/STOCKS\n"""
     try:
         for stock_ticker in stock_tickers:
             url = "https://financialmodelingprep.com/api/v3/historical-price-full/{}?timeseries=1".format(stock_ticker)
@@ -76,25 +80,23 @@ def stock_checker():
                 final_string = "The market hasn't moved (holiday or closure) or the data hasn't been refreshed. Do not act on this data."
                 return final_string
 
-            price_change = data['change']
-            price_change_percent = data['changePercent']
+            price_change = truncate(float(data['change']),4)
+            price_change_percent = truncate(float(data['changePercent']), 4)
             close = data['close']
 
-            change_float = float(price_change)
-
-            if change_float > 0:
+            if price_change > 0:
                 price_change_type = 'upward'
-            elif change_float < 0:
+            elif price_change < 0:
                 price_change_type = 'downward'
             else:
                 price_change_type = 'neutral'
 
-            final_string += "{stock_ticker}) trended {price_change_type} {price_change} (percentage: {price_change_percent}) on {ticker_date} to close at {close}.\n"\
+            final_string += "{stock_ticker} trended {price_change_type} {price_change} (percentage: {price_change_percent}) on {ticker_date} to close at {close}.\n"\
                             .format(
                                 stock_ticker=stock_ticker,
                                 price_change_type=price_change_type,
-                                price_change=price_change,
-                                price_change_percent=price_change_percent,
+                                price_change=str(price_change),
+                                price_change_percent=str(price_change_percent),
                                 ticker_date=ticker_date,
                                 close=close
                             )
@@ -119,3 +121,4 @@ def publish_message_sns(message):
 
     except Exception as e:
         print("ERROR PUBLISHING MESSAGE TO SNS: {}".format(e))
+
