@@ -58,7 +58,6 @@ def index_checker():
     return final_string
 
 
-
 def stock_checker():
     final_string = """\nETFS/STOCKS\n"""
     try:
@@ -73,7 +72,7 @@ def stock_checker():
             data = deserialised_data['historical'][0]
             ticker_date = data['date']
 
-            if datetime.utcnow().date() > (datetime.strptime(ticker_date, '%Y-%m-%d') + timedelta(days=1)):
+            if datetime.utcnow().date() > (datetime.strptime(ticker_date, '%Y-%m-%d') + timedelta(days=1)).date():
                 final_string = "The market hasn't moved (holiday or closure) or the data hasn't been refreshed. Do not act on this data."
                 return final_string
 
@@ -103,6 +102,7 @@ def stock_checker():
         print(e)
 
     return final_string
+
 
 def publish_message_sns(message):
     sns_arn = env.get('SNS_ARN').strip()
