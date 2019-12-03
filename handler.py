@@ -27,7 +27,7 @@ def index_checker():
             json_data = responseData.read()
             deserialised_data = json.loads(json_data)
             print(deserialised_data)
-        final_string = """Checking indexes at {utc_datetime} UTC:\n""".format(utc_datetime=datetime.utcnow())
+        final_string = """Checked indexes and stocks at {utc_datetime} UTC.\n\n""".format(utc_datetime=datetime.utcnow())
         market_indicator_total=0.0
         for ticker in deserialised_data['majorIndexesList']:
                 ticker_name = ticker['ticker']
@@ -70,7 +70,7 @@ def stock_checker():
                 deserialised_data = json.loads(json_data)
                 print(deserialised_data)
 
-            data = deserialised_data[stock_ticker][0]
+            data = deserialised_data['historical'][0]
             ticker_date = data['date']
 
             if datetime.utcnow().date() > (datetime.strptime(ticker_date, '%Y-%m-%d') + timedelta(days=1)):
