@@ -13,6 +13,7 @@ logging.basicConfig(level=logging.DEBUG)
 def lambda_handler(event, context):
 
     final_string = index_checker()
+    final_string += stock_checker()
 
     publish_message_sns(final_string)
 
@@ -53,6 +54,8 @@ def index_checker():
 
     except Exception as e:
         print(e)
+
+    return final_string
 
 
 
@@ -96,10 +99,6 @@ def stock_checker():
                                 ticker_date=ticker_date,
                                 close=close
                             )
-
-
-        final_string+="\n All indexes moved a cumulative sum of {} points. \n".format(str(market_indicator_total))
-
     except Exception as e:
         print(e)
 
