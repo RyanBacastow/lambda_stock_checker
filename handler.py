@@ -102,8 +102,7 @@ def stock_checker():
             else:
                 price_change_type = 'neutral'
 
-            final_string += "{stock_ticker} trended {price_change_type} {price_change} (percentage: {price_change_percent}) on {ticker_date} to close at {close}.\n" \
-                            "{stock_ticker} makes up {allocation}% of your {stock_portfolio} portfolio allocations.\n"\
+            final_string += "{stock_ticker} trended {price_change_type} {price_change} (percentage: {price_change_percent}) on {ticker_date} to close at {close}. {stock_ticker} makes up {allocation}% of your {stock_portfolio} portfolio allocations.\n"
                             .format(
                                 stock_ticker=stock_ticker,
                                 price_change_type=price_change_type,
