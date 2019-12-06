@@ -68,13 +68,13 @@ def stock_checker():
         for stock_ticker in all_stock_tickers:
             if stock_ticker in work_401k_allocations:
                 stock_portfolio = '401k'
-                allocation = work_401k_allocations['stock_ticker']
+                allocation = work_401k_allocations[stock_ticker]
             elif stock_ticker in ira_allocations:
                 stock_portfolio = 'IRA'
-                allocation = ira_allocations['stock_ticker']
+                allocation = ira_allocations[stock_ticker]
             elif stock_ticker in personal_allocations:
                 stock_portfolio = 'Personal'
-                allocation = personal_allocations['stock_ticker']
+                allocation = personal_allocations[stock_ticker]
 
             url = "https://financialmodelingprep.com/api/v3/historical-price-full/{}?timeseries=1".format(stock_ticker)
             print('Attempting get data from {}'.format(url))
