@@ -5,7 +5,7 @@ import boto3
 from datetime import timedelta, datetime
 from os import environ as env
 import logging
-from configs import stock_tickers
+from configs import all_stock_tickers, work_401k_allocations, ira_allocations, personal_allocations
 from helper import truncate
 
 boto3.set_stream_logger('boto3.resources', logging.DEBUG)
@@ -65,7 +65,17 @@ def index_checker():
 def stock_checker():
     final_string = """ETFS/STOCKS\n"""
     try:
-        for stock_ticker in stock_tickers:
+        for stock_ticker in all_stock_tickers:
+            if stock_ticker in work_401k_allocations:
+                stock_portfolio = '401k'
+                allocation = work_401k_allocations['stock_ticker']
+            elif stock_ticker in ira_allocations:
+                stock_portfolio = 'IRA'
+                allocation = ira_allocations['stock_ticker']
+            elif stock_ticker in personal_allocations:
+                stock_portfolio = 'Personal'
+                allocation = personal_allocations['stock_ticker']
+
             url = "https://financialmodelingprep.com/api/v3/historical-price-full/{}?timeseries=1".format(stock_ticker)
             print('Attempting get data from {}'.format(url))
             with closing(urlopen(url)) as responseData:
@@ -92,14 +102,17 @@ def stock_checker():
             else:
                 price_change_type = 'neutral'
 
-            final_string += "{stock_ticker} trended {price_change_type} {price_change} (percentage: {price_change_percent}) on {ticker_date} to close at {close}.\n"\
+            final_string += "{stock_ticker} trended {price_change_type} {price_change} (percentage: {price_change_percent}) on {ticker_date} to close at {close}.\n" \
+                            "{stock_ticker} makes up {allocation} of your {stock_portfolio} allocations.\n"\
                             .format(
                                 stock_ticker=stock_ticker,
                                 price_change_type=price_change_type,
                                 price_change=str(price_change),
                                 price_change_percent=str(price_change_percent),
                                 ticker_date=ticker_date,
-                                close=close
+                                close=close,
+                                allocation=allocation,
+                                stock_portfolio=stock_portfolio
                             )
     except Exception as e:
         print(e)
