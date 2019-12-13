@@ -7,6 +7,7 @@ from os import environ as env
 import logging
 from configs import all_stock_tickers, work_401k_allocations, ira_allocations, personal_allocations
 from helper import truncate
+import robinhood_api_trader
 
 boto3.set_stream_logger('boto3.resources', logging.DEBUG)
 logging.basicConfig(level=logging.DEBUG)
@@ -64,6 +65,9 @@ def index_checker():
 
 def stock_checker():
     final_string = """ETFS/STOCKS\n"""
+    buys = []
+    buy_lows = []
+
     try:
         for stock_ticker in all_stock_tickers:
             if stock_ticker in work_401k_allocations:
@@ -90,29 +94,33 @@ def stock_checker():
                 final_string = "The market hasn't moved (holiday or closure) or the data hasn't been refreshed. Do not act on this data."
                 return final_string
 
-            price_change = truncate(float(data['change']),4)
+            price_change = truncate(float(data['change']),2)
             change_float = float(price_change)
-            price_change_percent = truncate(float(data['changePercent']), 4)
+            price_change_percent = truncate(float(data['changePercent']), 2)
             close = data['close']
 
             if change_float > 0:
                 price_change_type = 'upward'
+                buys.append(stock_ticker)
             elif change_float < 0:
                 price_change_type = 'downward'
+                buy_lows.append(stock_ticker)
             else:
                 price_change_type = 'neutral'
 
-            final_string += "{stock_ticker} trended {price_change_type} {price_change} (percentage: {price_change_percent}) on {ticker_date} to close at {close}. {stock_ticker} makes up {allocation}% of your {stock_portfolio} portfolio allocations.\n"
+            final_string += "{stock_ticker} trended {price_change_type} {price_change} (percentage: {price_change_percent}) on {ticker_date} to close at {close}. {stock_ticker} makes up {allocation}% of your {stock_portfolio} portfolio allocations.\n"\
                             .format(
                                 stock_ticker=stock_ticker,
                                 price_change_type=price_change_type,
                                 price_change=str(price_change),
-                                price_change_percent=str(price_change_percent),
+                                price_change_percent=str(truncate(price_change_percent, 2)),
                                 ticker_date=ticker_date,
                                 close=close,
                                 allocation=allocation,
                                 stock_portfolio=stock_portfolio
                             )
+
+            robinhood_api_trader.main(buys,buy_lows)
     except Exception as e:
         print(e)
 
