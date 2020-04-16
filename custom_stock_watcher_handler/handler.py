@@ -5,8 +5,8 @@ import boto3
 from datetime import timedelta, datetime
 from os import environ as env
 import logging
-from custom_stock_watcher.configs import all_stock_tickers, work_401k_allocations, ira_allocations, personal_allocations
-from custom_stock_watcher.helper import truncate
+from custom_stock_watcher_handler.configs import all_stock_tickers, work_401k_allocations, ira_allocations, personal_allocations
+from custom_stock_watcher_handler.helper import truncate
 
 boto3.set_stream_logger('boto3.resources', logging.DEBUG)
 logging.basicConfig(level=logging.DEBUG)
