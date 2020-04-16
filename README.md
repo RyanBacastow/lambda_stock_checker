@@ -7,4 +7,6 @@ To make this work for yourself simply set up an sns queue in AWS with subscripti
 
 Lastly, you can edit your security names and proportions for your stocks, 401k, or ira portfolios accordingly in configs.py
 
+Feel free to use the makefile to deploy based on your aws profile configs/credentials. Otherwise you can simply upload the latest custom_stock_watcher.zip file through the cli or console.
+
 Enjoy!
