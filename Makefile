@@ -40,7 +40,7 @@ endif
 deploy: build
 	aws lambda update-function-code \
 		--profile $(AWS_PROFILE) \
-		--function-name custom_stock_watcher \
+		--function-name $(AWS_STOCK_CHECKER_LAMBDA_NAME) \
 		--zip-file fileb://$(ZIP_FILE)
 
 clean:
