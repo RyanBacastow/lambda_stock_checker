@@ -7,7 +7,6 @@ from os import environ as env
 import logging
 from configs import all_stock_tickers, work_401k_allocations, ira_allocations, personal_allocations
 from helper import truncate
-import robinhood_api_trader
 
 boto3.set_stream_logger('boto3.resources', logging.DEBUG)
 logging.basicConfig(level=logging.DEBUG)
@@ -120,7 +119,6 @@ def stock_checker():
                                 stock_portfolio=stock_portfolio
                             )
 
-            robinhood_api_trader.main(buys,buy_lows)
     except Exception as e:
         print(e)
 
